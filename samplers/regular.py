@@ -1,12 +1,14 @@
 import numpy as np
 
-def regular_sampler_rect(min_dist, length, width):
+def regular_sampler_rect(min_dist, length, width, offset_x =0, offset_y=0):
     """
     Returns the x,y coordinates for the points on a regular grid
     inside the given rectangle.
     :param min_dist: Minimum distance between any two points
     :param length: Length of the rectangle
     :param width: Width of the rectangle
+    :param offset_x: x Offset of the rectangle from the origin
+    :param offset_y: y offset of the rectangle from the origin
     :return: x,y coordinates
     """
 
@@ -20,7 +22,7 @@ def regular_sampler_rect(min_dist, length, width):
         raise RuntimeError("min_dist param too large for the given ploygon")
 
     xx, yy = np.meshgrid(x, y)
-    return xx[1:,1:].reshape(-1,1), yy[1:,1:].reshape(-1,1)
+    return xx[1:,1:].reshape(-1,1)+offset_x, yy[1:,1:].reshape(-1,1)+offset_y
 
 
 if __name__ =="__main__":
@@ -29,13 +31,13 @@ if __name__ =="__main__":
     sns.set_style('darkgrid')
     l = 20
     w = 10
-
-    xx,yy = regular_sampler_rect(0.9,l,w)
-    plt.hlines(0,0, l,'k',lw=2)
-    plt.hlines(w,0, l,'k',lw=2)
-    plt.vlines(0,0, w,'k',lw=2)
-    plt.vlines(l,0, w,'k',lw=2)
-    plt.plot(xx, yy, marker='.', color='k', linestyle='none')
+    o_x, o_y = 10, 20
+    xx,yy = regular_sampler_rect(0.9,l,w,offset_x=o_x, offset_y=o_y)
+    plt.hlines(o_y, o_x, o_x+l, 'k', lw=2)
+    plt.hlines(o_y+w,o_x, o_x+l, 'k', lw=2)
+    plt.vlines(o_x, o_y, o_y+w, 'k', lw=2)
+    plt.vlines(o_x+l, o_y, o_y+w, 'k', lw=2)
+    plt.scatter(xx, yy,marker='.', color='r', alpha= 0.6)
     plt.grid(True)
     plt.show()
 
