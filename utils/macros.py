@@ -1,0 +1,1 @@
+TONGUE_STYLE_PATH = 'tongue_styles/'
