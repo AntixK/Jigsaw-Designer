@@ -8,3 +8,4 @@ Jigsaw Designer
 - shapely
 - bezier
 - NURBS-Python (geomdl) 
+- cv2

@@ -1,1 +1,2 @@
-TONGUE_STYLE_PATH = 'tongue_styles/'
+TONGUE_STYLE_PATH = 'D:/Jigsaw Designer/assets/tongue_styles/'
+TEMPLATE_STYLE_PATH = 'D:/Jigsaw Designer/assets/templates/'

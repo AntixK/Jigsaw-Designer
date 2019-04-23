@@ -8,6 +8,13 @@ All the tongue styles were designed using this amazing tool - http://nurbscalcul
 
 """
 def get_tongue(id = 1, theta = 0, scale = 1.0):
+    """
+    Get the tongue vector from the list of tongue styles in the assets
+    :param id: Id indicating the tongue style
+    :param theta: Rotation angle for the tongue
+    :param scale: Scaling of the tongue
+    :return: Tongue array
+    """
     with open(TONGUE_STYLE_PATH+'tongue_style_{}.json'.format(id)) as f:
         data = json.load(f)
     knots = data['knots']
