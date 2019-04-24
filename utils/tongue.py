@@ -2,7 +2,7 @@ import numpy as np
 import json
 import matplotlib.pyplot as plt
 from geomdl import NURBS
-from macros import *
+from utils.macros import *
 from shapely.geometry import Point
 """
 All the tongue styles were designed using this amazing tool - http://nurbscalculator.in.
@@ -49,7 +49,7 @@ def get_tongue(id = 1, theta = 0, scale = 1.0):
     curve_points = curve_points@rot_matrix
     return curve_points
 
-def insert_tongue_in_line(start_pt, end_pt):
+def insert_tongue_in_line(start_pt, end_pt, **kwargs):
 
     a = 0.333
     x = start_pt.x*(1-a) + a*end_pt.x
@@ -60,24 +60,35 @@ def insert_tongue_in_line(start_pt, end_pt):
     y = start_pt.y*(1-(2*a)) + (2*a)*end_pt.y
     pt_2 = Point([x, y])
 
-    m = (end_pt.y - start_pt.y)/(end_pt.x-start_pt.x)
-    angle = 2*np.pi - np.arctan(m)
-    print(angle)
+    if abs(end_pt.x-start_pt.x) <= 1e-5:
+        angle = 90
+        angle = angle*np.pi/180
+    else:
+        m = (end_pt.y - start_pt.y)/(end_pt.x-start_pt.x)
+        angle = 2*np.pi - np.arctan(m)
+
     s = np.sqrt((pt_2.x-pt_1.x)**2+(pt_2.y - pt_1.y)**2)/4.6
-    curve_points = get_tongue(0, scale=s,theta=angle)
+    curve_points = get_tongue(scale=s,theta=angle, **kwargs)
+
     curve_points[:,0] += pt_1.x
     curve_points[:,1] += pt_1.y
+    #
+    # plt.plot((start_pt.x, pt_1.x), (start_pt.y, pt_1.y), 'r',lw=2)
+    # plt.plot((pt_1.x, pt_2.x), (pt_1.y, pt_2.y),lw=2)
+    # plt.plot((pt_2.x, end_pt.x), (pt_2.y, end_pt.y),lw=2)
+    # plt.plot(curve_points[:,0], curve_points[:,1],'r',lw=2)
+    # # plt.plot((curve_points[-1,0], end_pt.x), (curve_points[-1,1], end_pt.y),'r',lw=2)
+    #
+    # plt.grid(True)
 
-    # d = np.sqrt((curve_points[0,0] - curve_points[-1,0] )**2 + (curve_points[0,1] - curve_points[-1,1])**2)
-    # print(d, s*4.6)
-    plt.plot((start_pt.x, pt_1.x), (start_pt.y, pt_1.y))
-   # plt.plot((pt_1.x, pt_2.x), (pt_1.y, pt_2.y))
-    #plt.plot((pt_2.x, end_pt.x), (pt_2.y, end_pt.y))
-    plt.plot(curve_points[:,0], curve_points[:,1])
-    plt.plot((curve_points[-1,0], end_pt.x), (curve_points[-1,1], end_pt.y))
-    plt.grid(True)
-    plt.show()
-    return pt_1,pt_2
+    curve_points = np.insert(curve_points, 0, [pt_1.x, pt_1.y], axis=0)
+    curve_points = np.insert(curve_points, 0, [start_pt.x, start_pt.y], axis=0)
+    curve_points = np.insert(curve_points, -1, [pt_2.x, pt_2.y], axis=0)
+    curve_points = np.insert(curve_points, -1, [end_pt.x, end_pt.y], axis=0)
+
+    # plt.plot(curve_points[:, 0], curve_points[:, 1], 'r', lw=2)
+    # plt.show()
+    return curve_points
 
 
 if __name__ == "__main__":
@@ -85,8 +96,8 @@ if __name__ == "__main__":
     # plt.plot(curve_points[:,0], curve_points[:,1])
     # plt.grid(True)
     # plt.show()
-    a = Point([-5,3])
-    b = Point([5,0])
+    a = Point([13,27])
+    b = Point([13,25])
     insert_tongue_in_line(a,b)
 
     # dis = []
